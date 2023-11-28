@@ -61,16 +61,16 @@
     Copyright (c) 2018 Andre Weissflog
 
     This software is provided 'as-is', without any express or implied warranty.
-    In no event will the authors be held liable for any damages arising from the
-    use of this software.
+    In no event will the authors be held liable for any damages arising from
+   the use of this software.
 
     Permission is granted to anyone to use this software for any purpose,
     including commercial applications, and to alter it and redistribute it
     freely, subject to the following restrictions:
 
         1. The origin of this software must not be misrepresented; you must not
-        claim that you wrote the original software. If you use this software in a
-        product, an acknowledgment in the product documentation would be
+        claim that you wrote the original software. If you use this software in
+   a product, an acknowledgment in the product documentation would be
         appreciated but is not required.
 
         2. Altered source versions must be plainly marked as such, and must not
@@ -82,7 +82,7 @@
 #include <stdint.h>
 
 #ifndef SOKOL_API_DECL
-    #define SOKOL_API_DECL extern
+#define SOKOL_API_DECL extern
 #endif
 
 #ifdef __cplusplus
@@ -103,22 +103,23 @@ SOKOL_API_DECL double stm_ns(uint64_t ticks);
 } /* extern "C" */
 #endif
 
-/*-- IMPLEMENTATION ----------------------------------------------------------*/
+/*-- IMPLEMENTATION
+ * ----------------------------------------------------------*/
 #ifdef SOKOL_IMPL
 
 #ifndef SOKOL_API_IMPL
-    #define SOKOL_API_IMPL
+#define SOKOL_API_IMPL
 #endif
 #ifndef SOKOL_ASSERT
-    #include <assert.h>
-    #define SOKOL_ASSERT(c) assert(c)
+#include <assert.h>
+#define SOKOL_ASSERT(c) assert(c)
 #endif
 #ifndef _SOKOL_PRIVATE
-    #if defined(__GNUC__)
-        #define _SOKOL_PRIVATE __attribute__((unused)) static
-    #else
-        #define _SOKOL_PRIVATE static
-    #endif
+#if defined(__GNUC__)
+#define _SOKOL_PRIVATE __attribute__((unused)) static
+#else
+#define _SOKOL_PRIVATE static
+#endif
 #endif
 
 static int _stm_initialized;
@@ -142,7 +143,9 @@ static uint64_t _stm_posix_start;
     see https://gist.github.com/jspohr/3dc4f00033d79ec5bdaf67bc46c813e3
 */
 #if defined(_WIN32) || (defined(__APPLE__) && defined(__MACH__))
-_SOKOL_PRIVATE int64_t int64_muldiv(int64_t value, int64_t numer, int64_t denom) {
+_SOKOL_PRIVATE int64_t int64_muldiv(int64_t value, int64_t numer,
+                                    int64_t denom)
+{
     int64_t q = value / denom;
     int64_t r = value % denom;
     return q * numer + r * numer / denom;
@@ -150,55 +153,62 @@ _SOKOL_PRIVATE int64_t int64_muldiv(int64_t value, int64_t numer, int64_t denom)
 #endif
 
 
-SOKOL_API_IMPL void stm_setup(void) {
+SOKOL_API_IMPL void stm_setup(void)
+{
     SOKOL_ASSERT(0 == _stm_initialized);
     _stm_initialized = 1;
-    #if defined(_WIN32)
-        QueryPerformanceFrequency(&_stm_win_freq);
-        QueryPerformanceCounter(&_stm_win_start);
-    #elif defined(__APPLE__) && defined(__MACH__)
-        mach_timebase_info(&_stm_osx_timebase);
-        _stm_osx_start = mach_absolute_time();
-    #else
-        struct timespec ts;
-        clock_gettime(CLOCK_MONOTONIC, &ts);
-        _stm_posix_start = (uint64_t)ts.tv_sec*1000000000 + (uint64_t)ts.tv_nsec;
-    #endif
+#if defined(_WIN32)
+    QueryPerformanceFrequency(&_stm_win_freq);
+    QueryPerformanceCounter(&_stm_win_start);
+#elif defined(__APPLE__) && defined(__MACH__)
+    mach_timebase_info(&_stm_osx_timebase);
+    _stm_osx_start = mach_absolute_time();
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    _stm_posix_start = (uint64_t)ts.tv_sec * 1000000000 + (uint64_t)ts.tv_nsec;
+#endif
 }
 
-SOKOL_API_IMPL uint64_t stm_now(void) {
+SOKOL_API_IMPL uint64_t stm_now(void)
+{
     SOKOL_ASSERT(_stm_initialized);
     uint64_t now;
-    #if defined(_WIN32)
-        LARGE_INTEGER qpc_t;
-        QueryPerformanceCounter(&qpc_t);
-        now = int64_muldiv(qpc_t.QuadPart - _stm_win_start.QuadPart, 1000000000, _stm_win_freq.QuadPart);
-    #elif defined(__APPLE__) && defined(__MACH__)
-        const uint64_t mach_now = mach_absolute_time() - _stm_osx_start;
-        now = int64_muldiv(mach_now, _stm_osx_timebase.numer, _stm_osx_timebase.denom);
-    #else
-        struct timespec ts;
-        clock_gettime(CLOCK_MONOTONIC, &ts);
-        now = ((uint64_t)ts.tv_sec*1000000000 + (uint64_t)ts.tv_nsec) - _stm_posix_start;
-    #endif
+#if defined(_WIN32)
+    LARGE_INTEGER qpc_t;
+    QueryPerformanceCounter(&qpc_t);
+    now = int64_muldiv(qpc_t.QuadPart - _stm_win_start.QuadPart, 1000000000,
+                       _stm_win_freq.QuadPart);
+#elif defined(__APPLE__) && defined(__MACH__)
+    const uint64_t mach_now = mach_absolute_time() - _stm_osx_start;
+    now = int64_muldiv(mach_now, _stm_osx_timebase.numer,
+                       _stm_osx_timebase.denom);
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    now = ((uint64_t)ts.tv_sec * 1000000000 + (uint64_t)ts.tv_nsec)
+        - _stm_posix_start;
+#endif
     return now;
 }
 
-SOKOL_API_IMPL uint64_t stm_diff(uint64_t new_ticks, uint64_t old_ticks) {
+SOKOL_API_IMPL uint64_t stm_diff(uint64_t new_ticks, uint64_t old_ticks)
+{
     if (new_ticks > old_ticks) {
         return new_ticks - old_ticks;
-    }
-    else {
+    } else {
         /* FIXME: this should be a value that converts to a non-null double */
         return 1;
     }
 }
 
-SOKOL_API_IMPL uint64_t stm_since(uint64_t start_ticks) {
+SOKOL_API_IMPL uint64_t stm_since(uint64_t start_ticks)
+{
     return stm_diff(stm_now(), start_ticks);
 }
 
-SOKOL_API_IMPL uint64_t stm_laptime(uint64_t* last_time) {
+SOKOL_API_IMPL uint64_t stm_laptime(uint64_t* last_time)
+{
     SOKOL_ASSERT(last_time);
     uint64_t dt = 0;
     uint64_t now = stm_now();
@@ -209,20 +219,17 @@ SOKOL_API_IMPL uint64_t stm_laptime(uint64_t* last_time) {
     return dt;
 }
 
-SOKOL_API_IMPL double stm_sec(uint64_t ticks) {
+SOKOL_API_IMPL double stm_sec(uint64_t ticks)
+{
     return (double)ticks / 1000000000.0;
 }
 
-SOKOL_API_IMPL double stm_ms(uint64_t ticks) {
+SOKOL_API_IMPL double stm_ms(uint64_t ticks)
+{
     return (double)ticks / 1000000.0;
 }
 
-SOKOL_API_IMPL double stm_us(uint64_t ticks) {
-    return (double)ticks / 1000.0;
-}
+SOKOL_API_IMPL double stm_us(uint64_t ticks) { return (double)ticks / 1000.0; }
 
-SOKOL_API_IMPL double stm_ns(uint64_t ticks) {
-    return (double)ticks;
-}
+SOKOL_API_IMPL double stm_ns(uint64_t ticks) { return (double)ticks; }
 #endif /* SOKOL_IMPL */
-

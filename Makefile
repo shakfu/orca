@@ -11,6 +11,15 @@ release:
 	@echo "To run it, simply execute it:" >&2
 	@echo "$$ build/orca" >&2
 
+.PHONY: cmake static
+cmake:
+	@mkdir -p build && cd build && cmake .. && make
+
+static:
+	@scripts/get_portmidi.sh
+	@mkdir -p build && cd build && cmake .. -DBUILD_STATIC=ON && make
+
+
 .PHONY: clean
 clean:
 	@./tool clean

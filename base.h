@@ -30,8 +30,8 @@
 
 // (gcc / clang) or other
 #if defined(__GNUC__) || defined(__clang__)
-#define ORCA_ASSUME_ALIGNED(_ptr, _alignment)                                  \
-  __builtin_assume_aligned(_ptr, _alignment)
+#define ORCA_ASSUME_ALIGNED(_ptr, _alignment)                                 \
+    __builtin_assume_aligned(_ptr, _alignment)
 #define ORCA_PURE __attribute__((pure))
 #define ORCA_LIKELY(_x) __builtin_expect(_x, 1)
 #define ORCA_UNLIKELY(_x) __builtin_expect(_x, 0)
@@ -48,12 +48,14 @@
 
 // array count, safer on gcc/clang
 #if defined(__GNUC__) || defined(__clang__)
-#define ORCA_ASSERT_IS_ARRAY(_array)                                           \
-  (sizeof(char[1 - 2 * __builtin_types_compatible_p(                           \
-                           __typeof(_array), __typeof(&(_array)[0]))]) -       \
-   1)
-#define ORCA_ARRAY_COUNTOF(_array)                                             \
-  (sizeof(_array) / sizeof((_array)[0]) + ORCA_ASSERT_IS_ARRAY(_array))
+#define ORCA_ASSERT_IS_ARRAY(_array)                                          \
+    (sizeof(char[1                                                            \
+                 - 2                                                          \
+                     * __builtin_types_compatible_p(__typeof(_array),         \
+                                                    __typeof(&(_array)[0]))]) \
+     - 1)
+#define ORCA_ARRAY_COUNTOF(_array)                                            \
+    (sizeof(_array) / sizeof((_array)[0]) + ORCA_ASSERT_IS_ARRAY(_array))
 #else
 // pray
 #define ORCA_ARRAY_COUNTOF(_array) (sizeof(_array) / sizeof(_array[0]))
@@ -76,39 +78,41 @@ typedef ssize_t Isz;
 typedef char Glyph;
 typedef U8 Mark;
 
-ORCA_FORCEINLINE static Usz orca_round_up_power2(Usz x) {
-  assert(x <= SIZE_MAX / 2 + 1);
-  x -= 1;
-  x |= x >> 1;
-  x |= x >> 2;
-  x |= x >> 4;
-  x |= x >> 8;
-  x |= x >> 16;
+ORCA_FORCEINLINE static Usz orca_round_up_power2(Usz x)
+{
+    assert(x <= SIZE_MAX / 2 + 1);
+    x -= 1;
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
 #if SIZE_MAX > UINT32_MAX
-  x |= x >> 32;
+    x |= x >> 32;
 #endif
-  return x + 1;
+    return x + 1;
 }
 
 ORCA_OK_IF_UNUSED
-static bool orca_is_valid_glyph(Glyph c) {
-  if (c >= '0' && c <= '9')
-    return true;
-  if (c >= 'A' && c <= 'Z')
-    return true;
-  if (c >= 'a' && c <= 'z')
-    return true;
-  switch (c) {
-  case '!':
-  case '#':
-  case '%':
-  case '*':
-  case '.':
-  case ':':
-  case ';':
-  case '=':
-  case '?':
-    return true;
-  }
-  return false;
+static bool orca_is_valid_glyph(Glyph c)
+{
+    if (c >= '0' && c <= '9')
+        return true;
+    if (c >= 'A' && c <= 'Z')
+        return true;
+    if (c >= 'a' && c <= 'z')
+        return true;
+    switch (c) {
+    case '!':
+    case '#':
+    case '%':
+    case '*':
+    case '.':
+    case ':':
+    case ';':
+    case '=':
+    case '?':
+        return true;
+    }
+    return false;
 }

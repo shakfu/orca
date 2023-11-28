@@ -1,5 +1,7 @@
 # ORCΛ
 
+FORK NOTE: this fork adds cmake support to building orca and also improved static builds for macos. Otherwise its unchanged except for some clang-formatting of c files.
+
 Orca is an [esoteric programming language](https://en.wikipedia.org/wiki/Esoteric_programming_language) and live editor designed to quickly create procedural sequencers. Every letter of the alphabet is an operation, lowercase letters execute on `*bang*`, and uppercase letters execute each frame.
 
 This is the C implementation of the [ORCΛ](https://wiki.xxiivv.com/site/orca.html) language and terminal livecoding environment. It's designed to be power efficient. It can handle large files, even if your terminal is small.

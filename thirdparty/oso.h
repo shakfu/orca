@@ -108,40 +108,40 @@
 
 typedef struct oso oso;
 
-#define osoc(s) ((char const *)s)
+#define osoc(s) ((char const*)s)
 
-void osoput(oso **p, char const *cstr) OSO_NONNULL();
+void osoput(oso** p, char const* cstr) OSO_NONNULL();
 // ^- Copies the '\0'-terminated string into the `oso *` string located at
 //    `*p`. If `*p` is null or there isn't enough capacity to hold `cstr`, it
 //    will be reallocated. The pointer value at `*p` will be updated if
 //    necessary. `*p` and `cstr` must not point to overlapping memory.
-void osoputlen(oso **p, char const *cstr, size_t len) OSO_NONNULL();
+void osoputlen(oso** p, char const* cstr, size_t len) OSO_NONNULL();
 // ^- Same as above, but uses an additional parameter that specifies the length
 //    of `cstr, and `cstr` does not have to be '\0'-terminated.
 //    `*p` and `cstr` must not point to overlapping memory.
-void osoputoso(oso **p, oso const *other) OSO_NONNULL(1);
+void osoputoso(oso** p, oso const* other) OSO_NONNULL(1);
 // ^- Same as above, but using another `oso`. `*p` and `other` must not point
 //    to overlapping memory.
-void osoputvprintf(oso **p, char const *fmt, va_list ap) OSO_NONNULL(1, 2)
+void osoputvprintf(oso** p, char const* fmt, va_list ap) OSO_NONNULL(1, 2)
     OSO_PRINTF(2, 0);
-void osoputprintf(oso **p, char const *fmt, ...) OSO_NONNULL(1, 2)
+void osoputprintf(oso** p, char const* fmt, ...) OSO_NONNULL(1, 2)
     OSO_PRINTF(2, 3);
 // ^- Same as above, but do it by using printf.
 
-void osocat(oso **p, char const *cstr) OSO_NONNULL();
-void osocatlen(oso **p, char const *cstr, size_t len) OSO_NONNULL();
-void osocatoso(oso **p, oso const *other) OSO_NONNULL(1);
-void osocatvprintf(oso **p, char const *fmt, va_list ap) OSO_NONNULL(1, 2)
+void osocat(oso** p, char const* cstr) OSO_NONNULL();
+void osocatlen(oso** p, char const* cstr, size_t len) OSO_NONNULL();
+void osocatoso(oso** p, oso const* other) OSO_NONNULL(1);
+void osocatvprintf(oso** p, char const* fmt, va_list ap) OSO_NONNULL(1, 2)
     OSO_PRINTF(2, 0);
-void osocatprintf(oso **p, char const *fmt, ...) OSO_NONNULL(1, 2)
+void osocatprintf(oso** p, char const* fmt, ...) OSO_NONNULL(1, 2)
     OSO_PRINTF(2, 3);
 // ^- Append string to oso string. Same rules as `osoput` family.
 
-void osoensurecap(oso **p, size_t cap) OSO_NONNULL();
+void osoensurecap(oso** p, size_t cap) OSO_NONNULL();
 // ^- Ensure that s has at least `cap` memory allocated for it. This does not
 //    care about the strlen of the characters or the prefixed length count --
 //    only the backing memory allocation.
-void osomakeroomfor(oso **p, size_t len) OSO_NONNULL();
+void osomakeroomfor(oso** p, size_t len) OSO_NONNULL();
 // ^- Ensure that s has enough allocated space after the '\0'-terminnation
 //    character to hold an additional add_len characters. It does not adjust
 //    the `length` number value, only the capacity, if necessary.
@@ -151,31 +151,31 @@ void osomakeroomfor(oso **p, size_t len) OSO_NONNULL();
 //    also use them if you're going to modify the string buffer manually in
 //    your own code, and need to create some space in the buffer.
 
-void osoclear(oso **p) OSO_NONNULL();
+void osoclear(oso** p) OSO_NONNULL();
 // ^- Set len to 0, write '\0' at pos 0. Leaves allocated memory in place.
-void osofree(oso *s);
+void osofree(oso* s);
 // ^- You know. And calling with null is allowed.
-void osowipe(oso **p) OSO_NONNULL();
+void osowipe(oso** p) OSO_NONNULL();
 // ^- It's like `osofree()`, except you give it a ptr-to-ptr, and it also sets
 //    `*p` to null for you when it's done freeing the memory.
-void ososwap(oso **a, oso **b) OSO_NONNULL();
+void ososwap(oso** a, oso** b) OSO_NONNULL();
 // ^- Swaps the two pointers. Yeah, that's all it does. Why? Because it's
 //    common when dealing memory management for individually allocated strings
 //    and changing between old and new string values.
-void osopokelen(oso *s, size_t len) OSO_NONNULL();
+void osopokelen(oso* s, size_t len) OSO_NONNULL();
 // ^- Manually updates length field. Doesn't do anything else for you.
 
-size_t osolen(oso const *s);
+size_t osolen(oso const* s);
 // ^- Bytes in use by the string (not including the '\0' character.)
-size_t osocap(oso const *s);
+size_t osocap(oso const* s);
 // ^- Bytes allocated on heap (not including the '\0' terminator.)
-void osolencap(oso const *s, size_t *out_len, size_t *out_cap)
+void osolencap(oso const* s, size_t* out_len, size_t* out_cap)
     OSO_NONNULL(2, 3);
 // ^- Get both the len and the cap in one call.
-size_t osoavail(oso const *s);
+size_t osoavail(oso const* s);
 // ^- osocap(s) - osolen(s)
 
-void osotrim(oso *restrict s, char const *restrict cut_set) OSO_NONNULL(2);
+void osotrim(oso* restrict s, char const* restrict cut_set) OSO_NONNULL(2);
 // ^- Remove the characters in `cut_set` from the beginning and ending of `s`.
 
 #undef OSO_PRINTF
