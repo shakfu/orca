@@ -131,6 +131,18 @@ target_compile_options(
     ${PROJECT_NAME}
     PUBLIC
     "-isystem thirdparty"
+    # common hardening
+    -O2
+    -Wall
+    -Wformat=2
+    -Wconversion
+    -Wimplicit-fallthrough
+    -U_FORTIFY_SOURCE
+    -D_FORTIFY_SOURCE
+    -D_GLIBCXX_ASSERTIONS
+    -fstack-protector-strong
+    # executable hardening
+    -fPIE
 )
 
 target_link_directories(
@@ -144,19 +156,12 @@ target_link_directories(
 target_link_options(
     ${PROJECT_NAME}
     PUBLIC
-
 )
 
 target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
-    # -lncursesw
-    # -lformw
     $<IF:$<BOOL:${BUILD_STATIC}>,${ncurses_prefix}/lib/libncursesw.a,-lncursesw>
     $<IF:$<BOOL:${BUILD_STATIC}>,${ncurses_prefix}/lib/libformw.a,-lformw>
     $<IF:$<BOOL:${BUILD_STATIC}>,${portmidi_prefix}/lib/libportmidi.a,-lportmidi>
-    # ${ncurses_prefix}/lib/libncursesw.a
-    # ${ncurses_prefix}/lib/libformw.a
-    # ${portmidi_prefix/lib/libportmidi.a}
-    # -lportmidi
 )
